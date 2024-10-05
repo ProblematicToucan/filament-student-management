@@ -34,6 +34,12 @@ class ClassesResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
+                Tables\Columns\TextColumn::make('sections.name')
+                    ->badge()
+                    ->alignStart(),
+                Tables\Columns\TextColumn::make('students_count')->counts('students')
+                    ->badge()
+                    ->alignCenter(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

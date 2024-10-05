@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Exports\StudentsExport;
 use App\Filament\Resources\StudentResource\Pages;
 use App\Filament\Resources\StudentResource\RelationManagers;
+use App\Models\Classes;
 use App\Models\Section;
 use App\Models\Student;
 use Filament\Forms;
@@ -72,7 +73,29 @@ class StudentResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                Tables\Filters\Filter::make('class-section-filter')
+                    ->form([
+                        Forms\Components\Select::make('classes_id')
+                            ->label('filter by class')
+                            ->placeholder('select a class')
+                            ->options(
+                                Classes::pluck('name', 'id')->toArray()
+                            ),
+                        Forms\Components\Select::make('section_id')
+                            ->label('filter by section')
+                            ->placeholder('select a section')
+                            ->options(function (Get $get) {
+                                $classesId = $get('classes_id');
+                                return Section::where('classes_id', $classesId)->pluck('name', 'id')->toArray();
+                            }),
+                    ])
+                    ->query(fn(Builder $query, array $data) => $query->when(
+                        $data['classes_id'],
+                        fn($query) => $query->where('classes_id', $data['classes_id'])
+                    )->when(
+                        $data['section_id'],
+                        fn($query) => $query->where('section_id', $data['section_id'])
+                    )),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

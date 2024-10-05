@@ -39,6 +39,9 @@ class SectionResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('classes.name')
                     ->badge(),
+                Tables\Columns\TextColumn::make('students_count')->counts('students')
+                    ->badge()
+                    ->alignCenter(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
