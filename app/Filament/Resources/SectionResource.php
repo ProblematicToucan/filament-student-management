@@ -7,11 +7,13 @@ use App\Filament\Resources\SectionResource\RelationManagers;
 use App\Models\Section;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Validation\Rules\Unique;
 
 class SectionResource extends Resource
 {
@@ -26,6 +28,9 @@ class SectionResource extends Resource
         return $form
             ->schema([
                 Forms\Components\TextInput::make('name')
+                    ->unique(ignoreRecord: true, modifyRuleUsing: function (Get $get, Unique $rule) {
+                        return $rule->where('classes_id', $get('classes_id'));
+                    })
                     ->required(),
                 Forms\Components\Select::make('classes_id')
                     ->relationship('classes', 'name')

@@ -101,6 +101,10 @@ class StudentResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\Action::make('downloadPdf')
+                    ->url(function (Student $student) {
+                        return route('student.invoice.generate', $student);
+                    }),
                 Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
